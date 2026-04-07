@@ -36,8 +36,12 @@ def _handle_search(query: str, top_n: int, show_full: bool) -> int:
         console.print("[yellow]No matches found.[/yellow]")
         return 1
 
-    console.print(f"[bold green]Top matches for:[/bold green] {query}\n")
-    for idx, result in enumerate(results, start=1):
+    # Keep retrieval quality the same, but render weakest-to-strongest so the
+    # best match lands at the bottom of the terminal output.
+    display_results = list(reversed(results))
+
+    console.print(f"[bold green]Top matches for:[/bold green] {query} [dim](best shown last)[/dim]\n")
+    for idx, result in enumerate(display_results, start=1):
         console.print(_result_panel(idx, result, show_full=show_full))
     return 0
 
