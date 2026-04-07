@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[2]
 DATA_DIR = ROOT / "data"
 IMPORTS_DIR = DATA_DIR / "imports"
 INDEX_DIR = DATA_DIR / "index"
-IMPORT_CSV = IMPORTS_DIR / "staff_ds_behavioral_spoken.csv"
+IMPORT_CSV = IMPORTS_DIR / "behavioral_questions_combined_star.csv"
 RECORDS_JSON = INDEX_DIR / "records.json"
 INDEX_PKL = INDEX_DIR / "search_index.pkl"
 
@@ -34,15 +34,25 @@ def load_story_records(csv_path: Path = IMPORT_CSV) -> List[StoryRecord]:
     with csv_path.open(newline="", encoding="utf-8") as handle:
         reader = csv.DictReader(handle)
         for row in reader:
-            question = (row.get("Questions") or "").strip()
-            spoken = (row.get("Spoken_Answer") or "").strip()
+            question = (row.get("Question") or row.get("Questions") or "").strip()
+            question_detail = (row.get("Question_Detail") or "").strip()
+            source_sheet = (row.get("Source_Sheet") or "").strip()
+            pending = (row.get("Pending") or "").strip().lower()
+            spoken = (row.get("Answer_STAR") or row.get("Spoken_Answer") or "").strip()
             follow = (row.get("Follow_Up_Points") or "").strip()
-            if not question or not spoken:
+            search_text = (row.get("Search_Text") or "").strip()
+            if not question:
                 continue
-            full_text = "\n".join(part for part in [question, spoken, follow] if part).strip()
+            if pending == "yes":
+                continue
+            if not spoken and not search_text:
+                continue
+            full_text = search_text or "\n\n".join(part for part in [question, question_detail, spoken, follow] if part).strip()
             records.append(
                 StoryRecord(
                     question=question,
+                    question_detail=question_detail,
+                    source_sheet=source_sheet,
                     spoken_answer=spoken,
                     follow_up_points=follow,
                     full_text=full_text,

@@ -7,6 +7,8 @@ from typing import Dict
 @dataclass
 class StoryRecord:
     question: str
+    question_detail: str
+    source_sheet: str
     spoken_answer: str
     follow_up_points: str
     full_text: str

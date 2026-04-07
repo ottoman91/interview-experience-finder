@@ -8,23 +8,31 @@ A fast local CLI for pulling up the most relevant behavioral interview experienc
 - supports fast phrase lookup like `mistake`, `stakeholder buy-in`, or `leadership without authority`
 - returns:
   - question
-  - short spoken answer
-  - follow-up points
+  - question detail when available
+  - STAR-formatted answer
+  - source sheet
   - match score
 
 ## Source data
 
-V1 uses the copied CSV at:
+V1 now uses the richer combined CSV at:
 
-- `data/imports/staff_ds_behavioral_spoken.csv`
+- `data/imports/behavioral_questions_combined_star.csv`
+
+That file includes:
+- the combined deduplicated question list
+- sheet-priority preservation
+- STAR-formatted answers
+- Amazon principle detail text
+- a prebuilt `Search_Text` field for richer retrieval
 
 To refresh the app after you update your source stories elsewhere:
 
-1. replace `data/imports/staff_ds_behavioral_spoken.csv`
+1. replace `data/imports/behavioral_questions_combined_star.csv`
 2. run:
 
 ```bash
-uv run finder reindex
+./bin/finder reindex
 ```
 
 ## Commands
@@ -32,32 +40,28 @@ uv run finder reindex
 Search:
 
 ```bash
-uv run finder search "mistake"
-uv run finder search "stakeholder buy-in" --top 3
-uv run finder search "technical disagreement" --full
+./bin/finder search "mistake"
+./bin/finder search "stakeholder buy-in" --top 3
+./bin/finder search "technical disagreement" --full
 ```
 
 Rebuild index:
 
 ```bash
-uv run finder reindex
+./bin/finder reindex
 ```
 
 List all indexed questions:
 
 ```bash
-uv run finder list --limit 20
+./bin/finder list --limit 20
 ```
 
-## Helper script
+## Output behavior
 
-If you are already in the repo, you can use the local wrapper script instead of typing `uv run` each time:
-
-```bash
-./bin/finder search "mistake"
-./bin/finder search "leadership without authority" --top 3
-./bin/finder reindex
-```
+- search still ranks the strongest matches first internally
+- but results are printed weakest-to-strongest within the top set
+- that means the best match appears last at the bottom of the terminal output
 
 ## How ranking works
 

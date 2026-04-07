@@ -17,15 +17,17 @@ def _result_panel(position: int, result, show_full: bool) -> Panel:
     record = result.record
     body_lines = [
         f"[bold]Question[/bold]\n{record.question}",
-        f"[bold]Answer[/bold]\n{record.spoken_answer}",
     ]
+    if record.question_detail:
+        body_lines.append(f"[bold]Question detail[/bold]\n{record.question_detail}")
+    body_lines.append(f"[bold]Answer[/bold]\n{record.spoken_answer}")
     if record.follow_up_points:
         body_lines.append(f"[bold]Follow-ups[/bold]\n{record.follow_up_points}")
     if show_full:
         body_lines.append(f"[bold]Search text[/bold]\n{record.full_text}")
     body = "\n\n".join(body_lines)
     title = f"#{position}  score={result.score:.3f}"
-    subtitle = f"kw={result.keyword_score:.3f}  word={result.word_score:.3f}  char={result.char_score:.3f}"
+    subtitle = f"source={record.source_sheet or 'unknown'}  kw={result.keyword_score:.3f}  word={result.word_score:.3f}  char={result.char_score:.3f}"
     return Panel(body, title=title, subtitle=subtitle, expand=False)
 
 
@@ -36,8 +38,6 @@ def _handle_search(query: str, top_n: int, show_full: bool) -> int:
         console.print("[yellow]No matches found.[/yellow]")
         return 1
 
-    # Keep retrieval quality the same, but render weakest-to-strongest so the
-    # best match lands at the bottom of the terminal output.
     display_results = list(reversed(results))
 
     console.print(f"[bold green]Top matches for:[/bold green] {query} [dim](best shown last)[/dim]\n")
@@ -58,8 +58,9 @@ def _handle_list(limit: int) -> int:
     table = Table(title="Indexed interview stories")
     table.add_column("#", justify="right")
     table.add_column("Question", overflow="fold")
+    table.add_column("Source", overflow="fold")
     for idx, record in enumerate(index.records[:limit], start=1):
-        table.add_row(str(idx), record.question)
+        table.add_row(str(idx), record.question, record.source_sheet)
     console.print(table)
     return 0
 
