@@ -13,6 +13,32 @@ A fast local CLI for pulling up the most relevant behavioral interview experienc
   - source sheet
   - match score
 
+## Quick Start
+
+From anywhere on your machine, you can now use:
+
+```bash
+ifind "mistake"
+ifind "stakeholder buy-in"
+ifind "leadership without authority"
+```
+
+The global `ifind` command automatically treats plain text as a search query.
+You can also still use explicit commands when needed:
+
+```bash
+ifind search "technical disagreement"
+ifind reindex
+ifind list --limit 20
+```
+
+If you are already inside the repo, these also work:
+
+```bash
+./bin/ifind "mistake"
+./bin/finder search "mistake"
+```
+
 ## Source data
 
 V1 now uses the richer combined CSV at:
@@ -32,7 +58,7 @@ To refresh the app after you update your source stories elsewhere:
 2. run:
 
 ```bash
-./bin/finder reindex
+ifind reindex
 ```
 
 ## Commands
@@ -40,21 +66,21 @@ To refresh the app after you update your source stories elsewhere:
 Search:
 
 ```bash
-./bin/finder search "mistake"
-./bin/finder search "stakeholder buy-in" --top 3
-./bin/finder search "technical disagreement" --full
+ifind "mistake"
+ifind search "stakeholder buy-in" --top 3
+ifind search "technical disagreement" --full
 ```
 
 Rebuild index:
 
 ```bash
-./bin/finder reindex
+ifind reindex
 ```
 
 List all indexed questions:
 
 ```bash
-./bin/finder list --limit 20
+ifind list --limit 20
 ```
 
 ## Output behavior
