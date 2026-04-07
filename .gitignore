@@ -3,3 +3,6 @@ __pycache__/
 *.py[cod]
 .DS_Store
 data/index/
+# Behavioral interview files
+data/imports/*behavioral*.csv
+data/imports/staff_ds_behavioral_*.csv
